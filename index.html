@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#121212">
+<meta name="color-scheme" content="dark">
+<title>SanShin — Heavyweight Hoodie · Verified</title>
+<style>
+  :root{
+    --font-display: -apple-system, "SF Pro Display", "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
+    --font-body: -apple-system, "SF Pro Text", system-ui, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --ink:#f5f1e8;
+    --bone:#eee8da;
+    --paper:#121212;
+    --white:#1c1c1e;
+    --brass:#c9a668;
+    --brass-soft:#3a2f1c;
+    --moss:#9dc28c;
+    --moss-soft:#1f2a1a;
+    --line:#333230;
+    --muted:#9a9488;
+    --radius:20px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:#000000;
+    color:var(--ink);
+    font-family:var(--font-body);
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  .device{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    background:var(--paper);
+    position:relative;
+    padding-bottom:24px;
+    overflow-x:hidden;
+  }
+  .device::before,
+  .device::after{
+    content:"";
+    position:fixed;
+    pointer-events:none;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    filter:blur(42px);
+    opacity:.18;
+    z-index:0;
+    animation:ambientDrift 14s ease-in-out infinite alternate;
+  }
+  .device::before{
+    top:-70px;
+    right:-90px;
+    background:radial-gradient(circle, rgba(201,166,104,.55), rgba(201,166,104,0) 68%);
+  }
+  .device::after{
+    bottom:120px;
+    left:-110px;
+    background:radial-gradient(circle, rgba(157,194,140,.45), rgba(157,194,140,0) 68%);
+    animation-duration:18s;
+    animation-direction:alternate-reverse;
+  }
+  @keyframes ambientDrift{
+    from{ transform:translate3d(0,0,0) scale(1); }
+    to{ transform:translate3d(0,24px,0) scale(1.08); }
+  }
+
+  /* stitched dashed border motif */
+  .tag-card{
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius);
+    background:var(--white);
+    position:relative;
+  }
+  .tag-card::before, .tag-card::after{
+    content:"";
+    position:absolute;
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--paper);
+    border:1.5px dashed var(--line);
+    top:-5.5px;
+  }
+  .tag-card::before{ left:22px; }
+  .tag-card::after{ right:22px; }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    padding:calc(env(safe-area-inset-top,0px) + 14px) 20px 12px;
+    display:flex; align-items:center; justify-content:space-between;
+    background:rgba(18,18,18,0.72);
+    backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease;
+  }
+  header.scrolled{ border-bottom-color:var(--line); }
+  .brand-mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .brand-mark span{
+    font-family:var(--font-display);
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .brand-mark img{
+    display:block;
+    width:auto;
+    height:22px;
+    animation:logoFloat 6s ease-in-out infinite;
+  }
+  .footer-mark{
+    margin-bottom:4px;
+  }
+  .footer-mark img{
+    display:block;
+    width:auto;
+    height:20px;
+    margin:0 auto;
+    animation:logoFloat 6s ease-in-out infinite;
+    animation-delay:.35s;
+  }
+  .verified-chip{
+    display:flex; align-items:center; gap:5px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.04em;
+    color:var(--moss);
+    background:var(--moss-soft);
+    padding:6px 10px 6px 8px;
+    border-radius:100px;
+    opacity:0;
+    transform:translateY(-4px);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .verified-chip.show{ opacity:1; transform:translateY(0); }
+  .verified-chip svg{ width:12px; height:12px; }
+  .verified-chip.show svg{ animation:chipTick 1.6s ease-in-out infinite; }
+
+  /* ---------- NFC scan intro ---------- */
+  .scan-intro{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:38px 20px 30px;
+    text-align:center;
+  }
+  .scan-rings{
+    position:relative;
+    width:74px; height:74px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px;
+  }
+  .scan-rings .ring{
+    position:absolute;
+    border-radius:50%;
+    border:1.5px solid var(--brass);
+    opacity:0;
+    animation:ripple 1.8s ease-out infinite;
+  }
+  .scan-rings .ring:nth-child(2){ animation-delay:.5s; }
+  .scan-rings .ring:nth-child(3){ animation-delay:1s; }
+  @keyframes ripple{
+    0%{ width:20px; height:20px; opacity:.65; }
+    100%{ width:74px; height:74px; opacity:0; }
+  }
+  .scan-core{
+    position:relative; z-index:2;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    animation:corePulse 2.6s ease-in-out infinite;
+  }
+  .scan-core svg{ width:17px; height:17px; stroke:var(--paper); }
+  .scan-core::after{
+    content:"";
+    position:absolute;
+    inset:-7px;
+    border-radius:50%;
+    border:1px solid rgba(201,166,104,.18);
+    animation:coreRing 2.6s ease-out infinite;
+  }
+  .scan-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .scan-label strong{ color:var(--ink); font-weight:500; }
+
+  /* ---------- Gallery ---------- */
+  .gallery-wrap{ padding:0 16px; }
+  .gallery{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    border-radius:24px;
+    gap:0;
+    scrollbar-width:none;
+  }
+  .gallery::-webkit-scrollbar{ display:none; }
+  .slide{
+    flex:0 0 100%;
+    scroll-snap-align:center;
+    aspect-ratio:4/5;
+    border-radius:24px;
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .slide{ background:#1c1c1e; }
+  .slide-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:var(--bone);
+    text-align:center;
+    background:
+      radial-gradient(circle at top, rgba(201,166,104,.16), transparent 42%),
+      linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+  }
+  .slide-placeholder svg{
+    width:34px;
+    height:34px;
+    stroke:var(--brass);
+    opacity:.95;
+  }
+  .slide-placeholder strong{
+    font-family:var(--font-display);
+    font-size:16px;
+    letter-spacing:-0.01em;
+  }
+  .slide-placeholder span{
+    font-size:12px;
+    color:rgba(243,236,224,.72);
+    max-width:20ch;
+    line-height:1.45;
+  }
+  .edition-badge{
+    position:absolute; top:14px; left:14px;
+    font-family:var(--font-mono);
+    font-size:10.5px; letter-spacing:.05em;
+    background:rgba(26,24,22,0.72);
+    color:var(--bone);
+    padding:5px 10px;
+    border-radius:100px;
+    backdrop-filter:blur(6px);
+  }
+  .counter-badge{
+    position:absolute; bottom:14px; right:14px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    background:rgba(26,24,22,0.72);
+    color:var(--bone);
+    padding:5px 9px;
+    border-radius:100px;
+  }
+  .dots{
+    display:flex; justify-content:center; gap:6px;
+    padding:12px 0 4px;
+  }
+  .dot{ width:5px; height:5px; border-radius:50%; background:var(--line); transition:.25s; }
+  .dot.active{ width:14px; border-radius:4px; background:var(--brass); }
+
+  .thumbs{
+    display:flex; gap:8px; padding:10px 16px 4px; overflow-x:auto; scrollbar-width:none;
+  }
+  .thumbs::-webkit-scrollbar{ display:none; }
+  .thumb{
+    flex:0 0 50px; height:50px; border-radius:12px; cursor:pointer;
+    border:1.5px solid transparent;
+    opacity:.55; transition:.2s;
+    background:#2a2521;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--bone);
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:.03em;
+  }
+  .thumb.active{ opacity:1; border-color:var(--brass); }
+
+  /* ---------- Product info ---------- */
+  .product-info{ padding:22px 20px 6px; }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:28px;
+    letter-spacing:-0.01em;
+    line-height:1.12;
+    margin:0 0 8px;
+  }
+  .product-desc{
+    font-size:14.5px; line-height:1.55; color:#c8c1b2;
+    margin:0 0 14px;
+    max-width:36ch;
+  }
+  .serial-row{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono);
+    font-size:11px; color:var(--muted);
+  }
+  .serial-row .sep{ width:3px; height:3px; border-radius:50%; background:var(--line); }
+
+  /* ---------- Feature chips (fixed grid, no scroll) ---------- */
+  .chips{
+    display:flex; flex-wrap:wrap; gap:8px; padding:18px 20px 4px;
+  }
+  .chip{
+    display:flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:500;
+    padding:9px 13px;
+    border-radius:100px;
+    background:var(--white);
+    border:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .chip svg{ width:13px; height:13px; stroke:var(--brass); }
+
+  /* ---------- Section shell ---------- */
+  section.block{ padding:28px 20px 4px; }
+  .block-head{ margin-bottom:14px; }
+  .block-title{
+    font-family:var(--font-display); font-weight:700;
+    font-size:20px;
+    letter-spacing:-0.01em;
+    margin:0 0 4px;
+  }
+  .block-sub{ font-size:13px; color:var(--muted); margin:0; line-height:1.5; }
+
+  /* ---------- Specification (solid grouped list, iOS-style) ---------- */
+  .spec-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:2px 16px;
+  }
+  .spec-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:14px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    transition:transform .24s ease, border-color .24s ease;
+  }
+  .spec-row:last-child{ border-bottom:none; }
+  .spec-k{ font-size:13.5px; color:var(--muted); flex:0 0 auto; display:flex; align-items:center; gap:7px; }
+  .spec-v{ font-size:13.5px; font-weight:500; text-align:right; }
+  .spec-icon{
+    width:13px;
+    height:13px;
+    stroke:var(--brass);
+    flex:0 0 auto;
+  }
+  .spec-placeholder{
+    color:var(--muted);
+    font-weight:400;
+  }
+  .spec-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    color:var(--ink);
+    text-decoration:underline;
+    text-decoration-color:rgba(46,35,29,.38);
+    text-underline-offset:2px;
+    font-weight:500;
+    transition:opacity .2s ease, color .2s ease, transform .2s ease, text-decoration-color .2s ease, background-color .2s ease;
+    padding:2px 8px 2px 0;
+    border-radius:999px;
+  }
+  .spec-link:hover{
+    color:var(--brass);
+    text-decoration-color:currentColor;
+    transform:translateX(1px);
+    background:rgba(201,166,104,.08);
+  }
+  .spec-link::after{
+    content:'↗';
+    font-size:11px;
+    line-height:1;
+    opacity:.72;
+  }
+  .spec-link.is-placeholder{
+    pointer-events:none;
+    cursor:default;
+    text-decoration:none;
+  }
+  .spec-link.is-placeholder::after{ content:''; }
+  .spec-link:focus-visible{
+    outline:2px solid rgba(201,166,104,.55);
+    outline-offset:2px;
+    background:rgba(201,166,104,.08);
+  }
+  .spec-row:hover{
+    transform:translateX(2px);
+    border-bottom-color:rgba(201,166,104,.55);
+  }
+  .spec-row:hover .spec-icon{
+    transform:scale(1.08) rotate(-4deg);
+    stroke:var(--ink);
+  }
+  .spec-icon{
+    transition:transform .22s ease, stroke .22s ease;
+  }
+
+  /* ---------- Size Guide ---------- */
+  .size-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:6px 12px;
+    overflow-x:auto;
+  }
+  .size-note{
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 8px;
+  }
+  .size-table{ min-width:320px; }
+  .size-row{
+    display:grid;
+    grid-template-columns:0.7fr repeat(4,1fr);
+    gap:4px;
+    padding:11px 4px;
+  }
+  .size-row + .size-row{ border-top:1px solid var(--line); }
+  .size-row span{ font-size:12.5px; text-align:center; }
+  .size-row span:first-child{ text-align:left; font-weight:600; }
+  .size-header span{
+    font-family:var(--font-mono);
+    font-size:10px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted); font-weight:500;
+  }
+
+  /* ---------- Authenticity tag ---------- */
+  .auth-card{ padding:20px 18px; margin-top:4px; }
+  .auth-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:10px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:13px;
+  }
+  .auth-row:last-child{ border-bottom:none; }
+  .auth-k{
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .auth-icon{
+    width:12px;
+    height:12px;
+    stroke:var(--brass);
+    flex:0 0 auto;
+  }
+  .auth-v{ font-family:var(--font-mono); font-size:12.5px; text-align:right; font-weight:500; }
+
+  /* ---------- Care instructions ---------- */
+  .care-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  }
+  .care-card{
+    padding:14px 12px;
+    border-radius:16px;
+    background:var(--white);
+    border:1px solid var(--line);
+    animation:cardBreathe 8s ease-in-out infinite;
+  }
+  .care-card svg{ width:20px; height:20px; stroke:var(--ink); margin-bottom:9px; }
+  .care-card h4{ font-size:12.5px; font-weight:600; margin:0 0 4px; line-height:1.3; }
+  .care-card p{ font-size:11.5px; color:var(--muted); margin:0; line-height:1.4; }
+
+  .pro-tips{
+    margin-top:12px;
+    padding:16px 16px;
+    border-radius:16px;
+    background:var(--moss-soft);
+  }
+  .pro-tips-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .pro-tips-head span{ font-size:13px; font-weight:600; color:#c3dbb2; }
+  .pro-tips ul{ margin:0; padding-left:18px; }
+  .pro-tips li{ font-size:12.5px; color:#aac298; line-height:1.6; }
+
+  /* ---------- Concierge ---------- */
+  .concierge-card{
+    padding:20px 18px;
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .concierge-title{ font-family:var(--font-display); font-weight:700; font-size:16px; margin:0 0 4px; }
+  .concierge-sub{ font-size:12.5px; color:var(--muted); margin:0 0 14px; line-height:1.5; }
+  .contact-link{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 0;
+    border-top:1px solid var(--line);
+    text-decoration:none; color:var(--ink);
+    font-size:13.5px; font-weight:500;
+  }
+  .contact-link .lbl{ color:var(--muted); font-weight:400; font-size:11.5px; }
+  .contact-link svg{ width:14px; height:14px; stroke:var(--brass); }
+
+  .social-row{ display:flex; gap:10px; padding:16px 20px 6px; }
+  .social-btn{
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--white); border:1px solid var(--line);
+  }
+  .social-btn svg{ width:15px; height:15px; stroke:var(--ink); }
+
+  footer{
+    text-align:center; padding:34px 20px 10px;
+  }
+  .footer-fine{
+    font-family:var(--font-mono); font-size:10px; color:var(--muted); letter-spacing:.04em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .scan-rings .ring{ animation:none; opacity:0; }
+    .device::before,.device::after{ animation:none; }
+    .scan-core,.scan-core::after,.verified-chip.show svg,.brand-mark img,.footer-mark img,.care-card{ animation:none; }
+  }
+
+  /* ---------- Scroll reveal + micro interactions ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    transition-delay:var(--enter-delay, 0ms);
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  .slide-1{ animation:kenburns 1.1s ease-out; }
+  @keyframes kenburns{
+    from{ transform:scale(1.06); opacity:.6; }
+    to{ transform:scale(1); opacity:1; }
+  }
+  @keyframes logoFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-2px); }
+  }
+  @keyframes chipTick{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.12); }
+  }
+  @keyframes corePulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(245,241,232,.08); }
+    50%{ box-shadow:0 0 0 10px rgba(245,241,232,0); }
+  }
+  @keyframes coreRing{
+    0%{ transform:scale(.85); opacity:.55; }
+    100%{ transform:scale(1.5); opacity:0; }
+  }
+  @keyframes cardBreathe{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-1px); }
+  }
+
+  .chip{ transition:transform .18s ease, background .18s ease; }
+  .chip:active{ transform:scale(0.94); }
+
+  .care-card{ transition:transform .25s ease, box-shadow .25s ease; }
+  .care-card:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.4); }
+  .care-card:active{ transform:translateY(0) scale(0.98); }
+
+  .social-btn{ transition:transform .2s ease, background .2s ease; }
+  .social-btn:hover{ transform:translateY(-2px); background:var(--brass-soft); }
+
+  .thumb{ transition:opacity .2s ease, transform .2s ease, border-color .2s ease; }
+  .thumb:hover{ transform:translateY(-2px); }
+
+  .contact-link svg{ transition:transform .2s ease; }
+  .contact-link:hover svg{ transform:translateX(3px); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    .slide-1{ animation:none; }
+  }
+</style>
+</head>
+<body>
+<div class="device" id="device">
+
+  <header id="header">
+    <div class="brand-mark" aria-label="SanShin home">
+      <img src="logo-white-svg.svg" alt="SanShin">
+      <span>SanShin</span>
+    </div>
+    <span class="verified-chip" id="verifiedChip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      Verified
+    </span>
+  </header>
+
+  <div class="scan-intro">
+    <div class="scan-rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="scan-core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1.5" width="10" height="21" rx="2.4"/><line x1="10" y1="4" x2="14" y2="4"/><line x1="12" y1="19.3" x2="12" y2="19.3"/></svg>
+      </div>
+    </div>
+    <div class="scan-label"><strong>Tag authenticated</strong> · piece 047 of 100</div>
+  </div>
+
+    <!-- GALLERY -->
+  <div class="gallery-wrap">
+    <div class="gallery" id="gallery">
+      <div class="slide slide-1">
+        <div class="slide-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 14l2.5-3 3 4 2-2 3.5 4"/><circle cx="10" cy="10" r="1.2"/></svg>
+          <strong>Image placeholder</strong>
+          <span>Drop the product photo URL here when you have it.</span>
+        </div>
+        <span class="counter-badge">1 / 2</span>
+      </div>
+      <div class="slide">
+        <div class="slide-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 14l2.5-3 3 4 2-2 3.5 4"/><circle cx="10" cy="10" r="1.2"/></svg>
+          <strong>Image placeholder</strong>
+          <span>Use the second image slot for another angle or detail shot.</span>
+        </div>
+        <span class="counter-badge">2 / 2</span>
+      </div>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+  <!-- PRODUCT INFO -->
+  <div class="product-info reveal">
+    <div class="eyebrow">Atelier Line — 01</div>
+    <h1>Heavyweight Hoodie</h1>
+    <p class="product-desc">350gsm polar fleece, boxy cut, full zip closure with double-stitched seams and a plain unlined hood. Built heavy, built to last.</p>
+    <div class="serial-row">
+      <span>SN · SS-0472-HD</span>
+      <span class="sep"></span>
+      <span>Tapped just now</span>
+    </div>
+  </div>
+
+  <!-- FEATURE CHIPS -->
+  <div class="chips reveal">
+    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2C8 6 4 9 4 14a8 8 0 0 0 16 0c0-5-4-8-8-12z"/></svg>Sustainable</span>
+    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>Durable</span>
+    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Premium</span>
+    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 8.5a7 7 0 0 1 12 0"/><path d="M9 11a3 3 0 0 1 6 0"/><circle cx="12" cy="14" r="1"/></svg>NFC Enabled</span>
+    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l2.5 5 5.5.8-4 4 1 5.5L12 15l-5 2.3 1-5.5-4-4 5.5-.8z"/></svg>Certified</span>
+  </div>
+
+  <!-- PRODUCT SPECIFICATION -->
+  <section class="block reveal">
+    <div class="block-head">
+      <h2 class="block-title">Specification</h2>
+      <p class="block-sub">Everything about the fabric, fit and build.</p>
+    </div>
+    <div class="spec-card">
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12"/><path d="M6 12h12"/><path d="M6 17h12"/></svg>
+          Material
+        </span>
+        <span class="spec-v">100% Polyester Polar Fleece</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 8h10"/><path d="M8 8l4-4 4 4"/><path d="M8 16h8"/><path d="M8 16l4 4 4-4"/></svg>
+          Weight
+        </span>
+        <span class="spec-v">350 GSM</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19V8l5-3 5 3v11"/><path d="M9 19v-5h6v5"/><path d="M7 8l5 3 5-3"/></svg>
+          Fit
+        </span>
+        <span class="spec-v">Boxy, Relaxed Fit</span>
+      </div>
+      <!-- comment for a while  -->
+      <!-- <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M8 12h8"/></svg>
+          Hood
+        </span>
+        <span class="spec-v">Unlined, no drawstring</span>
+      </div> -->
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12l-1.5 10h-9z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg>
+          Pocket
+        </span>
+        <span class="spec-v">Kangaroo pocket</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h6l4 4v12H7z"/><path d="M13 4v4h4"/><path d="M10 12h4"/></svg>
+          Closure
+        </span>
+        <span class="spec-v">Full zip</span>
+      </div>
+    
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6h10"/><path d="M5 10h14"/><path d="M7 14h10"/><path d="M9 18h6"/></svg>
+          Sizes
+        </span>
+        <span class="spec-v">M · L</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M9 12h6"/></svg>
+          Color
+        </span>
+        <span class="spec-v">Black</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-k">
+          <svg class="spec-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16"/><path d="M5 10V8l7-4 7 4v2"/><path d="M6 10v9h12v-9"/><path d="M9 19v-5h6v5"/></svg>
+          Purchased from
+        </span>
+        <a class="spec-v spec-link spec-placeholder is-placeholder" id="shopLink" href="#" target="_blank" rel="noopener noreferrer">Add shop name</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIZE GUIDE -->
+  <section class="block reveal">
+    <div class="block-head">
+      <h2 class="block-title">Size Guide</h2>
+      <p class="block-sub" id="sizeGuideSub">All measurements in inches.</p>
+    </div>
+    <div class="size-card">
+      <p class="size-note" id="sizeGuideNote">Selected size: M</p>
+      <div class="size-table">
+        <div class="size-row size-header">
+          <span>Size</span><span>Shoulder</span><span>Chest</span><span>Sleeve</span><span>Length</span>
+        </div>
+        <div class="size-row" data-size="M">
+          <span>M</span><span>31</span><span>26</span><span>17</span><span>25</span>
+        </div>
+        <div class="size-row" data-size="L">
+          <span>L</span><span>32</span><span>28</span><span>18</span><span>26</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTHENTICITY / CRAFTSMANSHIP -->
+  <section class="block reveal">
+    <div class="block-head">
+      <h2 class="block-title">Craftsmanship</h2>
+      <p class="block-sub">The details stitched into every piece we make.</p>
+    </div>
+    <div class="tag-card auth-card">
+      <div class="auth-row"><span class="auth-k"><svg class="auth-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Hand-finishing time</span><span class="auth-v">2–3 weeks</span></div>
+      <div class="auth-row"><span class="auth-k"><svg class="auth-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 1-8-8"/><path d="M9 12l2 2 4-5"/></svg>Quality check</span><span class="auth-v">Master approved</span></div>
+      <div class="auth-row"><span class="auth-k"><svg class="auth-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6-4.8 6-10a6 6 0 0 0-12 0c0 5.2 6 10 6 10z"/><circle cx="12" cy="11" r="2"/></svg>Origin</span><span class="auth-v">Handmade · Myanmar</span></div>
+      <div class="auth-row"><span class="auth-k"><svg class="auth-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v10H4V7z"/><path d="M7 7V5h10v2"/><path d="M7 12h10"/></svg>Run size</span><span class="auth-v">1 of 100</span></div>
+      <div class="auth-row"><span class="auth-k"><svg class="auth-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 4v3M15 4v3M9 17v3M15 17v3M4 9h3M4 15h3M17 9h3M17 15h3"/></svg>Embedded chip</span><span class="auth-v">NFC · NTAG213</span></div>
+    </div>
+  </section>
+
+  <!-- CARE -->
+  <section class="block reveal">
+    <div class="block-head">
+      <h2 class="block-title">Care Instructions</h2>
+      <p class="block-sub">Follow these to keep the garment at its best for years.</p>
+    </div>
+    <div class="care-grid">
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M3 8h18M3 8l2-4h14l2 4M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><circle cx="12" cy="14" r="3"/></svg>
+        <h4>Cold wash</h4>
+        <p>Gentle cycle, inside out, alone.</p>
+      </div>
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 4l16 16M12 3v5M7 8h10l1 12H6z"/></svg>
+        <h4>Mild detergent</h4>
+        <p>No bleach, ever.</p>
+      </div>
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
+        <h4>No fabric softener</h4>
+        <p>It breaks down the fleece pile.</p>
+      </div>
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+        <h4>Tumble dry, low</h4>
+        <p>Low heat only, remove promptly.</p>
+      </div>
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 20h13a3 3 0 0 0 0-6H8m9-8l3 3-3 3M6 14V4"/></svg>
+        <h4>Do not iron</h4>
+        <p>Heat can melt synthetic fibers.</p>
+      </div>
+      <div class="care-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M6 3h12l-1 6-4 3 4 3-1 6H6l1-6 4-3-4-3z"/></svg>
+        <h4>Proper storage</h4>
+        <p>Hang, don't fold, long-term.</p>
+      </div>
+    </div>
+
+    <div class="pro-tips">
+      <div class="pro-tips-head"><span>Pro care tips</span></div>
+      <ul>
+        <li>Turn inside out before washing to reduce pilling on the fleece face</li>
+        <li>Wash with similar colors — polar fleece can pill against rougher fabrics</li>
+        <li>Remove from the dryer promptly to stop static and wrinkling</li>
+        <li>Skip fabric softener and dryer sheets — they flatten the fleece's loft</li>
+        <li>Keep away from Velcro, zippers, or rough surfaces in the wash and in storage</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CONCIERGE -->
+  <section class="block reveal">
+    <div class="block-head">
+      <h2 class="block-title">Concierge Service</h2>
+      <p class="block-sub">Our team is on hand for sizing, repairs or questions.</p>
+    </div>
+    <div class="tag-card concierge-card">
+      <a class="contact-link" href="tel:+959785146940">
+        <span><span class="lbl">Call</span><br>+95 9 785 146 940</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+      <a class="contact-link" href="mailto:sanshin739@gmail.com">
+        <span><span class="lbl">Email</span><br>sanshin739@gmail.com</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
+    <div class="social-row">
+      <a class="social-btn" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+      <a class="social-btn" href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M15 3v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M15 3c.5 2.5 2 4 5 4.5"/></svg></a>
+      <a class="social-btn" href="#" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-mark">
+      <img src="logo-white-svg.svg" alt="SanShin">
+    </div>
+    <div class="footer-fine">TAP TO VERIFY · PIECE 047/100 · SS-0472-HD</div>
+  </footer>
+
+
+</div>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => io.observe(el));
+
+  const header = document.getElementById('header');
+  const chip = document.getElementById('verifiedChip');
+  const device = document.getElementById('device');
+  const sizeGuideNote = document.getElementById('sizeGuideNote');
+  const sizeGuideSub = document.getElementById('sizeGuideSub');
+  const sizeRows = document.querySelectorAll('.size-row[data-size]');
+  const specRows = document.querySelectorAll('.spec-row');
+  const shopLink = document.getElementById('shopLink');
+  const motionEls = document.querySelectorAll('.reveal');
+
+  motionEls.forEach((el, index) => {
+    el.style.setProperty('--enter-delay', `${Math.min(index * 90, 540)}ms`);
+  });
+
+  const selectedSize = (() => {
+    const raw = (new URLSearchParams(window.location.search).get('size') || 'M').toUpperCase();
+    if(raw === 'L') return 'L';
+    if(raw === 'MEDIUM') return 'M';
+    return 'M';
+  })();
+  const selectedShopId = (() => {
+    const raw = Number(new URLSearchParams(window.location.search).get('from'));
+    return Number.isInteger(raw) && raw > 0 ? raw : 1;
+  })();
+  const shops = [
+    { id: 1, name: 'SanShin', url: 'https://tiktok.com' },
+    { id: 2, name: 'Malory clothing', url: 'https://tiktok.com' },
+     { id: 3, name: 'Mercury clothing', url: 'https://tiktok.com' },
+  ];
+  const selectedShop = shops.find(shop => shop.id === selectedShopId) || null;
+
+  const sizesRow = [...specRows].find(row => row.querySelector('.spec-k')?.textContent.trim() === 'Sizes');
+  if(sizesRow){
+    sizesRow.querySelector('.spec-v').textContent = selectedSize;
+  }
+  if(sizeGuideNote){
+    sizeGuideNote.textContent = `Selected size: ${selectedSize}`;
+  }
+  if(sizeGuideSub){
+    sizeGuideSub.textContent = `All measurements in inches for size ${selectedSize}.`;
+  }
+  sizeRows.forEach(row => {
+    row.hidden = row.dataset.size !== selectedSize;
+  });
+
+  if(shopLink){
+    if(selectedShop){
+      shopLink.textContent = selectedShop.name;
+      shopLink.href = selectedShop.url;
+      shopLink.target = '_blank';
+      shopLink.rel = 'noopener noreferrer';
+      shopLink.removeAttribute('tabindex');
+      shopLink.classList.remove('spec-placeholder', 'is-placeholder');
+      shopLink.setAttribute('aria-label', `Open ${selectedShop.name} on TikTok`);
+    }else{
+      shopLink.textContent = 'Add shop name';
+      shopLink.removeAttribute('href');
+      shopLink.removeAttribute('target');
+      shopLink.removeAttribute('rel');
+      shopLink.setAttribute('tabindex', '-1');
+      shopLink.classList.add('spec-placeholder', 'is-placeholder');
+      shopLink.removeAttribute('aria-label');
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 8){ header.classList.add('scrolled'); chip.classList.add('show'); }
+    else { header.classList.remove('scrolled'); chip.classList.remove('show'); }
+  });
+  setTimeout(()=> chip.classList.add('show'), 1400);
+
+  // gallery dots + thumbs
+  const gallery = document.getElementById('gallery');
+  const slides = gallery.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  const thumbsWrap = document.getElementById('thumbs');
+  let autoScrollTimer = null;
+  let autoScrollLocked = false;
+
+  slides.forEach((slide, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    dotsWrap.appendChild(d);
+
+    const t = document.createElement('div');
+    t.className = 'thumb' + (i===0 ? ' active' : '');
+    t.textContent = `P${i + 1}`;
+    t.setAttribute('aria-label', `Placeholder image ${i + 1}`);
+    t.addEventListener('click', () => {
+      autoScrollLocked = true;
+      slides[i].scrollIntoView({behavior:'smooth', inline:'center'});
+      clearTimeout(autoScrollTimer);
+      autoScrollTimer = setTimeout(() => { autoScrollLocked = false; }, 4000);
+    });
+    thumbsWrap.appendChild(t);
+  });
+
+  const dots = dotsWrap.querySelectorAll('.dot');
+  const thumbs = thumbsWrap.querySelectorAll('.thumb');
+
+  gallery.addEventListener('scroll', () => {
+    const idx = Math.round(gallery.scrollLeft / gallery.clientWidth);
+    dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
+    thumbs.forEach((t,i)=> t.classList.toggle('active', i===idx));
+  });
+
+  const startAutoScroll = () => {
+    clearInterval(autoScrollTimer);
+    autoScrollTimer = setInterval(() => {
+      if(autoScrollLocked || !slides.length) return;
+      const currentIndex = Math.round(gallery.scrollLeft / gallery.clientWidth);
+      const nextIndex = (currentIndex + 1) % slides.length;
+      slides[nextIndex].scrollIntoView({behavior:'smooth', inline:'center'});
+    }, 4500);
+  };
+
+  gallery.addEventListener('mouseenter', () => {
+    clearInterval(autoScrollTimer);
+  });
+  gallery.addEventListener('mouseleave', () => {
+    startAutoScroll();
+  });
+  startAutoScroll();
+
+</script>
+</body>
+</html>
