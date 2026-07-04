@@ -955,8 +955,6 @@
   const slides = gallery.querySelectorAll('.slide');
   const dotsWrap = document.getElementById('dots');
   const thumbsWrap = document.getElementById('thumbs');
-  let autoScrollTimer = null;
-  let autoScrollLocked = false;
 
   slides.forEach((slide, i) => {
     const d = document.createElement('div');
@@ -968,10 +966,7 @@
     t.textContent = `P${i + 1}`;
     t.setAttribute('aria-label', `Placeholder image ${i + 1}`);
     t.addEventListener('click', () => {
-      autoScrollLocked = true;
       slides[i].scrollIntoView({behavior:'smooth', inline:'center'});
-      clearTimeout(autoScrollTimer);
-      autoScrollTimer = setTimeout(() => { autoScrollLocked = false; }, 4000);
     });
     thumbsWrap.appendChild(t);
   });
@@ -984,24 +979,6 @@
     dots.forEach((d,i)=> d.classList.toggle('active', i===idx));
     thumbs.forEach((t,i)=> t.classList.toggle('active', i===idx));
   });
-
-  const startAutoScroll = () => {
-    clearInterval(autoScrollTimer);
-    autoScrollTimer = setInterval(() => {
-      if(autoScrollLocked || !slides.length) return;
-      const currentIndex = Math.round(gallery.scrollLeft / gallery.clientWidth);
-      const nextIndex = (currentIndex + 1) % slides.length;
-      slides[nextIndex].scrollIntoView({behavior:'smooth', inline:'center'});
-    }, 4500);
-  };
-
-  gallery.addEventListener('mouseenter', () => {
-    clearInterval(autoScrollTimer);
-  });
-  gallery.addEventListener('mouseleave', () => {
-    startAutoScroll();
-  });
-  startAutoScroll();
 
 </script>
 </body>
