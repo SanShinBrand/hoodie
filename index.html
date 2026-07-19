@@ -220,6 +220,14 @@
     overflow:hidden;
   }
   .slide{ background:#1c1c1e; }
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+  .slide{ background:#1c1c1e; }
   .slide-placeholder{
     width:100%;
     height:100%;
@@ -605,8 +613,9 @@
 
   <header id="header">
     <div class="brand-mark" aria-label="SanShin home">
-      <img src="logo-white-svg.svg" alt="SanShin">
-      <span>SanShin</span>
+      <svg viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SanShin" style="height:22px;width:auto;display:block">
+        <text x="0" y="22" font-family="-apple-system,'SF Pro Display',system-ui,'Helvetica Neue',Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="-0.5" fill="#f5f1e8">SanShin</text>
+      </svg>
     </div>
     <span class="verified-chip" id="verifiedChip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -623,28 +632,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1.5" width="10" height="21" rx="2.4"/><line x1="10" y1="4" x2="14" y2="4"/><line x1="12" y1="19.3" x2="12" y2="19.3"/></svg>
       </div>
     </div>
-    <div class="scan-label"><strong>Tag authenticated</strong> · piece 047 of 100</div>
+    <div class="scan-label"><strong>Tag authenticated</strong> · piece one of 100</div>
   </div>
 
     <!-- GALLERY -->
   <div class="gallery-wrap">
     <div class="gallery" id="gallery">
-      <div class="slide slide-1">
-        <div class="slide-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 14l2.5-3 3 4 2-2 3.5 4"/><circle cx="10" cy="10" r="1.2"/></svg>
-          <strong>Image placeholder</strong>
-          <span>Drop the product photo URL here when you have it.</span>
-        </div>
-        <span class="counter-badge">1 / 2</span>
-      </div>
-      <div class="slide">
-        <div class="slide-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 14l2.5-3 3 4 2-2 3.5 4"/><circle cx="10" cy="10" r="1.2"/></svg>
-          <strong>Image placeholder</strong>
-          <span>Use the second image slot for another angle or detail shot.</span>
-        </div>
-        <span class="counter-badge">2 / 2</span>
-      </div>
+      <div class="slide slide-1"><img src="https://tau3p6lfc9.ufs.sh/f/2rAgtJR6HaZlmlxRvxW93wQrptlMBfFcXTy0vEPjG5ZhoNYU" alt="SanShin hoodie photo 1" fetchpriority="high" decoding="async"><span class="counter-badge">1 / 4</span></div>
+      <div class="slide"><img src="https://tau3p6lfc9.ufs.sh/f/2rAgtJR6HaZlS5DMyp1bi47PIASUkd8mcjXaFshZofevJH51" alt="SanShin hoodie photo 2" loading="lazy" decoding="async"><span class="counter-badge">2 / 4</span></div>
+      <div class="slide"><img src="https://tau3p6lfc9.ufs.sh/f/2rAgtJR6HaZlzt4G1mk8J0U92pwrDE3hevAYdFOtsxljnfk4" alt="SanShin hoodie photo 3" loading="lazy" decoding="async"><span class="counter-badge">3 / 4</span></div>
+      <div class="slide"><img src="https://tau3p6lfc9.ufs.sh/f/2rAgtJR6HaZluZC8Q8tDiCg8I0TJMQGl1rVo3Pf9KUhjdebq" alt="SanShin hoodie photo 4" loading="lazy" decoding="async"><span class="counter-badge">4 / 4</span></div>
     </div>
     <div class="dots" id="dots"></div>
     <div class="thumbs" id="thumbs"></div>
@@ -858,9 +855,11 @@
 
   <footer>
     <div class="footer-mark">
-      <img src="logo-white-svg.svg" alt="SanShin">
+      <svg viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SanShin" style="height:18px;width:auto;display:block;opacity:0.5">
+        <text x="0" y="22" font-family="-apple-system,'SF Pro Display',system-ui,'Helvetica Neue',Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="-0.5" fill="#f5f1e8">SanShin</text>
+      </svg>
     </div>
-    <div class="footer-fine">TAP TO VERIFY · PIECE 047/100 · SS-0472-HD</div>
+    <div class="footer-fine">TAP TO VERIFY .</div>
   </footer>
 
 
@@ -961,10 +960,15 @@
     d.className = 'dot' + (i===0 ? ' active' : '');
     dotsWrap.appendChild(d);
 
+    const img = slide.querySelector('img');
     const t = document.createElement('div');
     t.className = 'thumb' + (i===0 ? ' active' : '');
-    t.textContent = `P${i + 1}`;
-    t.setAttribute('aria-label', `Placeholder image ${i + 1}`);
+    if(img){
+      t.style.backgroundImage = `url(${img.src})`;
+      t.style.backgroundSize = 'cover';
+      t.style.backgroundPosition = 'center';
+    }
+    t.setAttribute('aria-label', `Product image ${i + 1}`);
     t.addEventListener('click', () => {
       slides[i].scrollIntoView({behavior:'smooth', inline:'center'});
     });
